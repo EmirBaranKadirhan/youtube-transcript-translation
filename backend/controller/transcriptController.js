@@ -1,39 +1,36 @@
-import { YoutubeTranscript } from 'youtube-transcript';
-
-const extractVideoId = (url) => {
-
-    const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
-    const match = url.match(regex);
-    return match ? match[1] : null;
-
-
-}
+const axios = require("axios")
 
 
 const getTranscript = async (req, res) => {
 
+    const fromUserGetUrl = req.body.videoUrl;
+
+
     try {
 
-        const { videoUrl } = req.body       // frontend gelen url
-        const videoId = extractVideoId(videoUrl);
+        const response = await axios.get("https://api.scrapecreators.com/v1/youtube/video/transcript", {
 
-        if (!videoId) {
-            return res.send(400).json({ message: "Geçersiz YouTube URL'si!" })
-        }
+            headers: {
+                'x-api-key': process.env.ScrapeCreators_API_KEY
+            },
+            params: {
+                'url': fromUserGetUrl,
+            }
 
-        const transcriptConfig = await YoutubeTranscript.fetchTranscript(videoId);
+        })
 
-        const fullText = transcriptConfig.map((item) => item.text).join(" ");
-
+        console.log(response)
         res.status(200).json({
             success: true,
-            videoId: videoId,
-            transcript: fullText
+            videoId: response.data.videoId,
+            transcript: response.data.transcript_only_text
         })
     } catch (error) {
-
-        console.error("Transkript hatası:", error);
-        res.status(500).json({ message: "Transkript alınırken bir hata oluştu. (Altyazılar kapalı olabilir)" });
+        console.log(error)
     }
 
+}
+
+module.exports = {
+    getTranscript
 }
