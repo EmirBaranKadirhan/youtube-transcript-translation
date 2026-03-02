@@ -21,10 +21,13 @@ const connectDB = async () => {
     }
 }
 
-connectDB();
+
 
 app.listen(process.env.PORT, () => {
 
     console.log(`Uygulama ${process.env.PORT} portunda başarıyla çalıştı!`)
 
 })
+
+
+connectDB();
