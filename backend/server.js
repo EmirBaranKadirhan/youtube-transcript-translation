@@ -3,10 +3,14 @@ const app = express();
 require("dotenv").config();
 const cors = require("cors");
 const mongoose = require('mongoose');
+const transcriptRoutes = require("./routes/transcriptRoutes")
 
 
 app.use(express.json());
 app.use(cors());
+
+
+app.use('/api/transcript', transcriptRoutes)
 
 
 const connectDB = async () => {

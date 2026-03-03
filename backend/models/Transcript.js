@@ -19,6 +19,10 @@ const TranscriptSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    summarizedText: {
+        type: String,
+        required: true
+    },
     selectedLanguage: {
         type: String,
         default: 'tr'
@@ -26,4 +30,4 @@ const TranscriptSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 
-module.exports = mongoose.model("Transcript", TranscriptSchema)
+module.exports = mongoose.model("Transcript", TranscriptSchema);

@@ -2,7 +2,7 @@ const Groq = require("groq-sdk");
 
 const client = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-const translateAndSummarize = async (transcriptText) => {
+const translateAndSummarize = async (transcriptText, title) => {
 
     try {
         const chatCompletion = await client.chat.completions.create({
@@ -15,8 +15,13 @@ const translateAndSummarize = async (transcriptText) => {
                         2. Write a concise summary in Turkish (max 3-4 sentences).
                         3. Use the EXACT headers provided below. DO NOT translate the headers "TRANSLATION:" and "SUMMARY:".
                         4. Do not include any introductory text like "Sure, here is the translation".
+                        5. Create a short Turkish title (max 10 words) for this video
                             
                         Return your response in this exact format:
+
+                            TITLE:
+                            [Turkish title here]
+
                             TRANSLATION:
                             [Turkish translation here]
 
@@ -34,16 +39,21 @@ const translateAndSummarize = async (transcriptText) => {
         const text = chatCompletion.choices[0].message.content;
         console.log(text)
 
-        const summaryMatch = text.split("SUMMARY");
-        const translationMatch = summaryMatch[0].split("TRANSLATION")  // translationMatch ==> ["", " Merhaba dünya "]
+        const titleMatch = text.split("TITLE:");
+        console.log("SPLIT RESULT:", titleMatch);
 
-        const translation = translationMatch[1].trim() ?? "Ceviri Yapilamadi";
+        const translationMatch = titleMatch[1].split("TRANSLATION:");
+        const summaryMatch = translationMatch[1].split("SUMMARY:")  // summaryMatch ==> ["", " Merhaba dünya "]
+
+        const title = translationMatch[0]?.trim() ?? "Baslik Yapilamadi"
+        const translation = translationMatch[1]?.trim() ?? "Ceviri Yapilamadi";
         const summary = summaryMatch[1]?.trim() ?? "Ozet Yapilamadi";   // ?? ==> null veya undefined gelirse "Ozet Yapilamadi"
 
-        return { translation, summary }
+        return { title, translation, summary }
 
     } catch (error) {
-        console.log(error)
+        console.log("GROQ HATASI:", error)
+        return null
     }
 }
 

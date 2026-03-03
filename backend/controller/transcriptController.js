@@ -1,5 +1,6 @@
 const axios = require("axios")
 const translateAndSummarize = require("../services/groqService")
+const Transcript = require("../models/Transcript")
 
 const getTranscript = async (req, res) => {
 
@@ -19,9 +20,30 @@ const getTranscript = async (req, res) => {
 
         })
 
+        const cleanedText = response.data.transcript_only_text.replace(/\s+/g, ' ').trim();
+
         // console.log(response)
-        console.log(response.data.transcript_only_text)
-        const completedTranslation = await translateAndSummarize(response.data.transcript_only_text)
+        console.log("Orjinal Metin:", cleanedText)
+
+        const completedTranslation = await translateAndSummarize(cleanedText)
+
+        if (!completedTranslation) {
+            return res.status(503).json({
+                message: "Çeviri servisi şu an kullanılamıyor, lütfen daha sonra tekrar deneyin."
+            })
+        }
+
+
+        const savedTranscript = await Transcript.create({
+            videoId: response.data.videoId,
+            title: completedTranslation["title"],
+            originalText: cleanedText,
+            translatedText: completedTranslation["translation"],
+            summarizedText: completedTranslation["summary"],
+
+
+        });
+
         res.status(200).json({
             success: true,
             videoId: response.data.videoId,
