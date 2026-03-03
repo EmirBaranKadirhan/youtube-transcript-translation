@@ -1,5 +1,5 @@
 const axios = require("axios")
-
+const translateAndSummarize = require("../services/groqService")
 
 const getTranscript = async (req, res) => {
 
@@ -19,11 +19,13 @@ const getTranscript = async (req, res) => {
 
         })
 
-        console.log(response)
+        // console.log(response)
+        console.log(response.data.transcript_only_text)
+        const completedTranslation = await translateAndSummarize(response.data.transcript_only_text)
         res.status(200).json({
             success: true,
             videoId: response.data.videoId,
-            transcript: response.data.transcript_only_text
+            transcript: completedTranslation
         })
     } catch (error) {
         console.log(error)
