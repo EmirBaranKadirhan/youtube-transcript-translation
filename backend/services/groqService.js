@@ -46,8 +46,9 @@ const translateAndSummarize = async (transcriptText, title) => {
         const summaryMatch = translationMatch[1].split("SUMMARY:")  // summaryMatch ==> ["", " Merhaba dünya "]
 
         const title = translationMatch[0]?.trim() ?? "Baslik Yapilamadi"
-        const translation = translationMatch[1]?.trim() ?? "Ceviri Yapilamadi";
+        const translation = summaryMatch[0]?.trim() ?? "Ceviri Yapilamadi";
         const summary = summaryMatch[1]?.trim() ?? "Ozet Yapilamadi";   // ?? ==> null veya undefined gelirse "Ozet Yapilamadi"
+        console.log("SUMMARY:", summary)
 
         return { title, translation, summary }
 
