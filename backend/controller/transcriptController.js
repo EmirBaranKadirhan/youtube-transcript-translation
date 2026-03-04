@@ -55,6 +55,23 @@ const getTranscript = async (req, res) => {
 
 }
 
+
+const getHistory = async (req, res) => {
+
+    try {
+
+        const transcripts = await Transcript.find().sort({ createdAt: -1 }).limit(20)
+        res.status(200).json(transcripts)
+
+    } catch (error) {
+        res.status(500).json({ message: "Geçmiş alınamadı" })
+    }
+
+
+}
+
+
 module.exports = {
-    getTranscript
+    getTranscript,
+    getHistory
 }
