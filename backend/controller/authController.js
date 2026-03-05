@@ -1,6 +1,7 @@
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcrypt");
 const saltRounds = 10;
-const User = require("../models/Users")
+const User = require("../models/Users");
+const jwt = require("jsonwebtoken");
 
 
 const checkRegister = async (req, res) => {
@@ -31,4 +32,51 @@ const checkRegister = async (req, res) => {
         console.log(error)
         res.status(500).json({ message: "Sunucu hatası" })
     }
+}
+
+
+const userLogin = async (req, res) => {
+
+    const { password, email } = req.body;
+
+    try {
+
+        const user = await User.findOne({ email: email });
+
+        if (!user) {
+
+            return res.status(404).json({ message: "Kullanici bulunamadi" });
+        }
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if (!isMatch) {
+
+            return res.status(400).json({ message: "Sifre hatali" });
+        }
+
+        const token = jwt.sign(
+            { userId: user._id },
+            process.env.JWT_SECRET,
+            { expiresIn: '7d' });
+
+        return res.status(200).json({ message: "Basarili", token: token });
+
+
+
+
+
+
+    } catch (error) {
+        console.log(error);
+    }
+
+
+}
+
+
+
+
+module.exports = {
+    checkRegister,
+    userLogin
 }
