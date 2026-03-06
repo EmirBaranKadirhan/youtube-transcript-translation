@@ -4,13 +4,15 @@ require("dotenv").config();
 const cors = require("cors");
 const mongoose = require('mongoose');
 const transcriptRoutes = require("./routes/transcriptRoutes")
-
+const authRoutes = require("./routes/authRoutes")
+const authMiddleware = require("./middleware/authMiddleware")
 
 app.use(express.json());
 app.use(cors());
 
 
-app.use('/api/transcript', transcriptRoutes)
+app.use('/api/auth', authRoutes)
+app.use('/api/transcript', authMiddleware, transcriptRoutes)
 
 
 const connectDB = async () => {

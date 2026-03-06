@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 const checkRegister = async (req, res) => {
 
     const { username, password, email } = req.body          // hata firlatan bir sey olmadigi icin try-catch icine koymadik !!
+    console.log(username, password, email)
     try {
 
         const register = await User.findOne({ email })
