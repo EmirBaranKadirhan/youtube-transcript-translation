@@ -1,7 +1,11 @@
 const mongoose = require("mongoose");
 
 const TranscriptSchema = new mongoose.Schema({
-
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+    },
     videoId: {                      // YouTube'un verdigi ID (orn: dQw4w9WgXcQ)
         type: String,
         required: true,

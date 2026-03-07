@@ -41,6 +41,7 @@ const getTranscript = async (req, res) => {
 
 
         const savedTranscript = await Transcript.create({
+            userId: req.user,
             videoId: response.data.videoId,
             title: completedTranslation["title"],
             originalText: cleanedText,
@@ -66,7 +67,7 @@ const getHistory = async (req, res) => {
 
     try {
 
-        const transcripts = await Transcript.find().sort({ createdAt: -1 }).limit(20)
+        const transcripts = await Transcript.find({ userId: req.user }).sort({ createdAt: -1 }).limit(20)
         res.status(200).json(transcripts)
 
     } catch (error) {
