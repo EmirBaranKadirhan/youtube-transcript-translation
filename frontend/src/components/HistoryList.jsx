@@ -10,14 +10,16 @@ function HistoryList({ history, onSelect }) {
     )
   }
 
+  console.log(history)
+
   return (
     <div className="flex flex-col gap-2">
       {history.map((item) => (
         <button
-          // 📌 key — React'ta listede her elemanın unique key'i olmalı
+
           key={item._id}
           onClick={() => onSelect({
-            transcript: {
+            transcript: {               // ResultCard yapisinin anlayabilecegi sekile cevirdik
               title: item.title,
               translation: item.translatedText,
               summary: item.summarizedText

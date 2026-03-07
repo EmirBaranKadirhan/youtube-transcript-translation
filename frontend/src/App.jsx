@@ -3,6 +3,8 @@ import Searchbar from './components/Searchbar'
 import axios from 'axios';
 import ResultCard from './components/ResultCard';
 import HistoryList from './components/HistoryList';
+import Login from './components/Login';
+import Register from './components/Register';
 
 function App() {
 
@@ -11,19 +13,30 @@ function App() {
   const [error, setError] = useState(null);
 
   const [history, setHistory] = useState([])
+  const [page, setPage] = useState("login")
 
 
   useEffect(() => {
-    fetchHistory()
-  }, [])
+    if (page === "home") {
+      fetchHistory()
+    }
+  }, [page])
 
   const fetchHistory = async () => {
 
+    setLoading(true)
+    const token = localStorage.getItem("token")
     try {
-      const response = await axios.get("http://localhost:5000/api/transcript/history");
+      const response = await axios.get("http://localhost:5000/api/transcript/history", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
       setHistory(response.data);
     } catch (error) {
       console.log(error)
+    } finally {
+      setLoading(false)
     }
 
   }
@@ -31,10 +44,15 @@ function App() {
   const handleSubmit = async (videoUrl) => {
 
     setLoading(true)
+    const token = localStorage.getItem("token")
     try {
       // axios ile backend'e istek at
       const response = await axios.post("http://localhost:5000/api/transcript/get-transcript", {
         videoUrl: videoUrl        // body'e videoUrl seklinde gonderiyoruz, controller tarafinda gonderileni aliyoruz !
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       })
 
       // gelen veriyi setResult'a ver
@@ -53,11 +71,19 @@ function App() {
 
   }
 
+  if (page === "login") {
+    return <Login onPageChange={(page) => setPage(page)} />
+  }
+
+  if (page === "register") {
+    return <Register onPageChange={(page) => setPage(page)} />
+  }
+
   return (
 
     <div className="min-h-screen bg-[#0a0f1e] flex font-sans">
 
-      {/* SOL SIDEBAR — History */}
+
       <aside className="w-80 border-r border-white/10 p-6 flex flex-col gap-4 overflow-y-auto">
         <h2 className="text-white/50 text-xs font-semibold uppercase tracking-widest">
           Geçmiş Çeviriler
@@ -65,10 +91,10 @@ function App() {
         <HistoryList history={history} onSelect={setResult} />
       </aside>
 
-      {/* SAĞ TARAF — Ana içerik */}
+
       <main className="flex-1 p-10 flex flex-col gap-8 overflow-y-auto">
 
-        {/* BAŞLIK */}
+
         <div className="text-center">
           <h1 className="text-4xl font-bold text-white tracking-tight">
             YouTube <span className="text-blue-400">Çevirici</span>
@@ -78,15 +104,15 @@ function App() {
           </p>
         </div>
 
-        {/* ARAMA */}
+
         <Searchbar onSubmit={handleSubmit} loading={loading} />
 
-        {/* HATA MESAJI */}
+
         {error && (
           <div className="text-red-400 text-sm text-center">{error}</div>
         )}
 
-        {/* SONUÇ */}
+
         {result && <ResultCard transcriptData={result} />}
       </main>
     </div>
