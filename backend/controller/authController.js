@@ -2,9 +2,16 @@ const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const User = require("../models/Users");
 const jwt = require("jsonwebtoken");
+const { validationResult } = require('express-validator');
 
 
 const checkRegister = async (req, res) => {
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+
 
     const { username, password, email } = req.body          // hata firlatan bir sey olmadigi icin try-catch icine koymadik !!
     console.log(username, password, email)

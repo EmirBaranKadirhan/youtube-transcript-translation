@@ -1,8 +1,14 @@
 const axios = require("axios")
 const translateAndSummarize = require("../services/groqService")
 const Transcript = require("../models/Transcript")
+const { validationResult } = require('express-validator');
 
 const getTranscript = async (req, res) => {
+
+    const errors = validationResult(req);            // route'taki validation kurallarını kontrol et
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
 
     const fromUserGetUrl = req.body.videoUrl;
 
@@ -69,6 +75,9 @@ const getHistory = async (req, res) => {
 
 
 }
+
+
+
 
 
 module.exports = {
