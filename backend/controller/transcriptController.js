@@ -12,52 +12,71 @@ const getTranscript = async (req, res) => {
 
     const fromUserGetUrl = req.body.videoUrl;
 
+    const urlObj = new URL(fromUserGetUrl)
+    const videoId = urlObj.searchParams.get("v")
 
-    try {
+    const existingVideo = await Transcript.findOne({ videoId: videoId })
 
-        const response = await axios.get("https://api.scrapecreators.com/v1/youtube/video/transcript", {
+    if (existingVideo) {
+        console.log("daha once video url transkript edilmis")
+        return res.status(200).json({
+            success: true,
+            videoId: existingVideo.videoId,
+            transcript: {
+                translation: existingVideo.translatedText,
+                summary: existingVideo.summarizedText,
+                title: existingVideo.title
+            }
+        })
 
-            headers: {
-                'x-api-key': process.env.ScrapeCreators_API_KEY
-            },
-            params: {
-                'url': fromUserGetUrl,
+    } else {
+        try {
+
+            const response = await axios.get("https://api.scrapecreators.com/v1/youtube/video/transcript", {
+
+                headers: {
+                    'x-api-key': process.env.ScrapeCreators_API_KEY
+                },
+                params: {
+                    'url': fromUserGetUrl,
+                }
+
+            })
+
+            const cleanedText = response.data.transcript_only_text.replace(/\s+/g, ' ').trim();
+
+            // console.log(response)
+            console.log("Orjinal Metin:", cleanedText)
+
+            const completedTranslation = await translateAndSummarize(cleanedText)
+
+            if (!completedTranslation) {
+                return res.status(503).json({
+                    message: "Çeviri servisi şu an kullanılamıyor, lütfen daha sonra tekrar deneyin."
+                })
             }
 
-        })
 
-        const cleanedText = response.data.transcript_only_text.replace(/\s+/g, ' ').trim();
+            const savedTranscript = await Transcript.create({
+                userId: req.user,
+                videoId: response.data.videoId,
+                title: completedTranslation["title"],
+                originalText: cleanedText,
+                translatedText: completedTranslation["translation"],
+                summarizedText: completedTranslation["summary"],
 
-        // console.log(response)
-        console.log("Orjinal Metin:", cleanedText)
 
-        const completedTranslation = await translateAndSummarize(cleanedText)
+            });
 
-        if (!completedTranslation) {
-            return res.status(503).json({
-                message: "Çeviri servisi şu an kullanılamıyor, lütfen daha sonra tekrar deneyin."
+            res.status(200).json({
+                success: true,
+                videoId: response.data.videoId,
+                transcript: completedTranslation
             })
+        } catch (error) {
+            console.log(error)
         }
 
-
-        const savedTranscript = await Transcript.create({
-            userId: req.user,
-            videoId: response.data.videoId,
-            title: completedTranslation["title"],
-            originalText: cleanedText,
-            translatedText: completedTranslation["translation"],
-            summarizedText: completedTranslation["summary"],
-
-
-        });
-
-        res.status(200).json({
-            success: true,
-            videoId: response.data.videoId,
-            transcript: completedTranslation
-        })
-    } catch (error) {
-        console.log(error)
     }
 
 }
