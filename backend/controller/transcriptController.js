@@ -12,25 +12,26 @@ const getTranscript = async (req, res) => {
 
     const fromUserGetUrl = req.body.videoUrl;
 
-    const urlObj = new URL(fromUserGetUrl)
-    const videoId = urlObj.searchParams.get("v")
+    try {
+        const urlObj = new URL(fromUserGetUrl)
+        const videoId = urlObj.searchParams.get("v")
 
-    const existingVideo = await Transcript.findOne({ videoId: videoId, userId: req.user })
+        const existingVideo = await Transcript.findOne({ videoId: videoId, userId: req.user })
 
-    if (existingVideo) {
-        console.log("daha once video url transkript edilmis")
-        return res.status(200).json({
-            success: true,
-            videoId: existingVideo.videoId,
-            transcript: {
-                translation: existingVideo.translatedText,
-                summary: existingVideo.summarizedText,
-                title: existingVideo.title
-            }
-        })
+        if (existingVideo) {
+            console.log("daha once video url transkript edilmis")
+            return res.status(200).json({
+                success: true,
+                videoId: existingVideo.videoId,
+                transcript: {
+                    translation: existingVideo.translatedText,
+                    summary: existingVideo.summarizedText,
+                    title: existingVideo.title
+                }
+            })
 
-    } else {
-        try {
+        } else {
+
 
             const response = await axios.get("https://api.scrapecreators.com/v1/youtube/video/transcript", {
 
@@ -42,7 +43,6 @@ const getTranscript = async (req, res) => {
                 }
 
             })
-
             const cleanedText = response.data.transcript_only_text.replace(/\s+/g, ' ').trim();
 
             // console.log(response)
@@ -73,13 +73,14 @@ const getTranscript = async (req, res) => {
                 videoId: response.data.videoId,
                 transcript: completedTranslation
             })
-        } catch (error) {
-            console.log(error)
         }
-
+    } catch (error) {
+        res.status(500).json({ message: "Bir hata oluştu, lütfen tekrar deneyin." })
     }
-
 }
+
+
+
 
 
 const getHistory = async (req, res) => {
