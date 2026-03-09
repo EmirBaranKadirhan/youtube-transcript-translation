@@ -17,7 +17,7 @@ function Register({ onPageChange }) {
 
         try {
 
-            const userRegister = await axios.post("http://localhost:5000/api/auth/register", {
+            const userRegister = await axios.post("https://youtube-transcript-translation.onrender.com/api/auth/register", {
                 username: username,
                 email: email,
                 password: password
