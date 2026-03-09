@@ -8,8 +8,8 @@ function Searchbar({ onSubmit, loading }) {
 
 
     const handleClick = () => {
-        // 📌 Boş input kontrolü
-        if (!videoUrl.trim()) return
+        // Boş input kontrolü
+        if (!videoUrl.trim()) return        // return ile hata varsa fonksiyondan hemen cikilir
         onSubmit(videoUrl)
     }
     return (
@@ -19,13 +19,13 @@ function Searchbar({ onSubmit, loading }) {
                 placeholder="YouTube linki girin... (örn: https://youtube.com/watch?v=...)"
                 value={videoUrl}
                 onChange={(e) => setVideoUrl(e.target.value)}
-                // 📌 Enter tuşuna basınca da çalışsın
-                // onKeyDown={(e) => e.key === 'Enter' && handleClick()}
+                // Enter tuşuna basınca da çalışsın
+                onKeyDown={(e) => e.key === 'Enter' && handleClick()}
                 className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-blue-400"
             />
             <Button
                 onClick={handleClick}
-                // 📌 loading true iken buton devre dışı
+                // loading true iken buton devre dışı
                 disabled={loading}
                 className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 shrink-0"
             >

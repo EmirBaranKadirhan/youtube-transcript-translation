@@ -6,6 +6,8 @@ import HistoryList from './components/HistoryList';
 import Login from './components/Login';
 import Register from './components/Register';
 import { DoorClosed } from 'lucide-react'
+import { Spinner } from "@/components/ui/spinner"
+
 
 function App() {
 
@@ -126,7 +128,11 @@ function App() {
         )}
 
 
-        {result && <ResultCard transcriptData={result} />}
+        {loading ? (
+          <div className="text-white text-center flex justify-center items-center h-40"><Spinner className="size-8" /></div>
+        ) : (
+          result && <ResultCard transcriptData={result} />
+        )}
       </main>
     </div>
   )
