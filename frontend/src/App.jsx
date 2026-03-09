@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import Searchbar from './components/Searchbar'
+import SearchBar from './components/SearchBar'
 import axios from 'axios';
 import ResultCard from './components/ResultCard';
 import HistoryList from './components/HistoryList';
@@ -120,7 +120,7 @@ function App() {
         </div>
 
 
-        <Searchbar onSubmit={handleSubmit} loading={loading} />
+        <SearchBar onSubmit={handleSubmit} loading={loading} />
 
 
         {error && (
