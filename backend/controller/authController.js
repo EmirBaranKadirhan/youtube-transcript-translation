@@ -45,6 +45,11 @@ const checkRegister = async (req, res) => {
 
 const userLogin = async (req, res) => {
 
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+
     const { password, email } = req.body;
 
     try {
@@ -76,6 +81,7 @@ const userLogin = async (req, res) => {
 
     } catch (error) {
         console.log(error);
+        res.status(500).json({ message: "Sunucu hatası" })
     }
 
 

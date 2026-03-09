@@ -9,7 +9,9 @@ router.post('/register', body("email").isEmail().withMessage("Geçerli bir email
     body("username").trim().notEmpty().withMessage("Kullanıcı adı boş olamaz"),
     authController.checkRegister)
 
-router.post('/login', authController.userLogin)
+router.post('/login', body("email").isEmail().withMessage("Geçerli bir email giriniz"),
+    body("password").notEmpty().withMessage("Şifre boş olamaz"),
+    authController.userLogin)
 
 
 
