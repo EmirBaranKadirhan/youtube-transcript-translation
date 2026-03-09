@@ -5,6 +5,7 @@ import ResultCard from './components/ResultCard';
 import HistoryList from './components/HistoryList';
 import Login from './components/Login';
 import Register from './components/Register';
+import { DoorClosed } from 'lucide-react'
 
 function App() {
 
@@ -59,6 +60,7 @@ function App() {
       setResult(response.data)
       console.log(response.data)
 
+      setError(null)
       fetchHistory()        // Yeni çeviri sonrası history'yi güncelle
 
     } catch (error) {
@@ -69,6 +71,12 @@ function App() {
       setLoading(false)
     }
 
+  }
+
+  const handleLogout = () => {
+
+    localStorage.removeItem("token");
+    setPage("login")
   }
 
   if (page === "login") {
@@ -83,6 +91,12 @@ function App() {
 
     <div className="min-h-screen bg-[#0a0f1e] flex font-sans">
 
+      <button
+        onClick={handleLogout}
+        className="absolute top-4 right-4 p-2 rounded-lg text-white/40 hover:text-white hover:bg-white/10 transition-colors"
+      >
+        <DoorClosed size={28} />
+      </button>
 
       <aside className="w-80 border-r border-white/10 p-6 flex flex-col gap-4 overflow-y-auto">
         <h2 className="text-white/50 text-xs font-semibold uppercase tracking-widest">
@@ -90,7 +104,6 @@ function App() {
         </h2>
         <HistoryList history={history} onSelect={setResult} />
       </aside>
-
 
       <main className="flex-1 p-10 flex flex-col gap-8 overflow-y-auto">
 
