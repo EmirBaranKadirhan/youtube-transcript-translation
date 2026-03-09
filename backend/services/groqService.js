@@ -16,6 +16,7 @@ const translateAndSummarize = async (transcriptText, title) => {
                         3. Use the EXACT headers provided below. DO NOT translate the headers "TRANSLATION:" and "SUMMARY:".
                         4. Do not include any introductory text like "Sure, here is the translation".
                         5. Create a short Turkish title (max 10 words) for this video
+                        6. Any word that is not Turkish must be translated to Turkish. This includes words in German, French, Chinese, Russian, or any other language
                             
                         Return your response in this exact format:
 
