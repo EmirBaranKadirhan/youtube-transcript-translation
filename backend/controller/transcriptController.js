@@ -15,7 +15,7 @@ const getTranscript = async (req, res) => {
     const urlObj = new URL(fromUserGetUrl)
     const videoId = urlObj.searchParams.get("v")
 
-    const existingVideo = await Transcript.findOne({ videoId: videoId })
+    const existingVideo = await Transcript.findOne({ videoId: videoId, userId: req.user })
 
     if (existingVideo) {
         console.log("daha once video url transkript edilmis")

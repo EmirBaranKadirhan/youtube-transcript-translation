@@ -9,7 +9,7 @@ const TranscriptSchema = new mongoose.Schema({
     videoId: {                      // YouTube'un verdigi ID (orn: dQw4w9WgXcQ)
         type: String,
         required: true,
-        unique: true
+        //unique: true
     },
     title: {
         type: String,
