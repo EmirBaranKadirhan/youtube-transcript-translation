@@ -87,7 +87,7 @@ const getHistory = async (req, res) => {
 
     try {
 
-        const transcripts = await Transcript.find({ userId: req.user }).sort({ createdAt: -1 }).limit(20)
+        const transcripts = await Transcript.find({ userId: req.user }).sort({ createdAt: -1 }).limit(10)
         res.status(200).json(transcripts)
 
     } catch (error) {
