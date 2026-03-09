@@ -7,6 +7,7 @@ import Login from './components/Login';
 import Register from './components/Register';
 import { DoorClosed } from 'lucide-react'
 import { Spinner } from "@/components/ui/spinner"
+const BASE_URL = import.meta.env.VITE_API_URL
 
 
 function App() {
@@ -30,7 +31,7 @@ function App() {
     setLoading(true)
     const token = localStorage.getItem("token")
     try {
-      const response = await axios.get("https://youtube-transcript-translation.onrender.com/api/transcript/history", {
+      const response = await axios.get(`${BASE_URL}/api/transcript/history`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -50,7 +51,7 @@ function App() {
     const token = localStorage.getItem("token")
     try {
       // axios ile backend'e istek at
-      const response = await axios.post("https://youtube-transcript-translation.onrender.com/api/transcript/get-transcript", {
+      const response = await axios.post(`${BASE_URL}/api/transcript/get-transcript`, {
         videoUrl: videoUrl        // body'e videoUrl seklinde gonderiyoruz, controller tarafinda gonderileni aliyoruz !
       }, {
         headers: {

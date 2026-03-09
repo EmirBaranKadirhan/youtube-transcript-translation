@@ -3,6 +3,8 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import axios from 'axios'
+const BASE_URL = import.meta.env.VITE_API_URL
+
 
 function Login({ onPageChange }) {
 
@@ -17,7 +19,7 @@ function Login({ onPageChange }) {
 
         try {
 
-            const userLogin = await axios.post("https://youtube-transcript-translation.onrender.com/api/auth/login", {
+            const userLogin = await axios.post(`${BASE_URL}/api/auth/login`, {
                 email: email,
                 password: password
             })
