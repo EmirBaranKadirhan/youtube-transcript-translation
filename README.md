@@ -9,7 +9,7 @@
 ## 📸 Screenshots
 
 
-### Login Page
+### Main Page
 ![Demo](./screenshots/demo.gif)
 
 ### Login Page
