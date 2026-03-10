@@ -98,7 +98,7 @@ function App() {
         onClick={handleLogout}
         className="absolute top-4 right-4 p-2 rounded-lg text-white/40 hover:text-white hover:bg-white/10 transition-colors"
       >
-        <DoorClosed size={28} />
+        <DoorClosed strokeWidth={2.5} size={32} />
       </button>
 
       <aside className="w-80 border-r border-white/10 p-6 flex flex-col gap-4 overflow-y-auto">
